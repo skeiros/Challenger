@@ -39,7 +39,6 @@ class GitDetailFragment : Fragment() {
             throw RuntimeException( context.toString()+" must implement SelectGitRepo")
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

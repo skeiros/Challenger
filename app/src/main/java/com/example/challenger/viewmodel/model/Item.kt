@@ -1,4 +1,12 @@
-package com.example.challenger.data
+/*
+ * *
+ * Created by Daniel Sequeiros on 5/6/22 19:44
+ * Copyright (c) 2022. All rights reserved
+ * Last modified 5/6/22 19:44
+ * /
+ */
+
+package com.example.challenger.viewmodel.model
 
 data class Item(
     val allow_forking: Boolean,

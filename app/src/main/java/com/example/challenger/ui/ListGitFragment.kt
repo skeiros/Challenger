@@ -3,19 +3,24 @@ package com.example.challenger.ui
 import android.content.Context
 import android.os.Bundle
 
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import androidx.fragment.app.Fragment
+  import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.challenger.R
+
+import com.example.challenger.viewmodel.model.Item
+import layout.GitAdapter
 import java.lang.RuntimeException
 
 
 
-class ListGitFragment : Fragment() {
+class ListGitFragment : Fragment(R.layout.fragment_list_git) {
+
     interface selectedGitRepo {
         fun selectRepo(position:Int)
     }
@@ -44,17 +49,17 @@ class ListGitFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view:View=inflater.inflate(R.layout.fragment_list_git, container, false)
-        val personListView: ListView =view.findViewById(R.id.gitListView);
-        val arrayAdapter: ArrayAdapter<*>
-        arrayAdapter= ArrayAdapter(this.requireContext() ,android.R.layout.simple_list_item_1,listItems)
-        personListView.adapter=arrayAdapter
-        personListView.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = parent.getItemAtPosition(position) as String
-            activityInside?.selectRepo(position)
-        }
+
         return view
     }
+    fun setupRecycledView(list: List<Item>){
+        //recyclerView.layoutManager=LinearLayoutManager(this)
+       // Log.d("msg","Recycler "+list.toString())
 
+        val recyclerView  =view?.findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView?.layoutManager= LinearLayoutManager(context)
+        recyclerView?.adapter=GitAdapter(list)
+    }
 
 }
 

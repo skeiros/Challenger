@@ -5,54 +5,69 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.challenger.R
-import com.example.challenger.data.Item
+import com.example.challenger.data.GitDataSet
+import com.example.challenger.databinding.ActivityMainBinding
+import com.example.challenger.interfaces.GitAppInterface
+import com.example.challenger.viewmodel.model.Item
 import com.example.challenger.viewmodel.MainViewModel
+import com.example.challenger.viewmodel.MyViewModelFactory
 
 
-const val BASE_URL="https://api.github.com/search/";
 private lateinit var viewModel: MainViewModel
 
 class MainActivity : AppCompatActivity(),ListGitFragment.selectedGitRepo,GitDetailFragment.backFromGitDetail  {
-    val listGitFragment=ListGitFragment();
-    var gitDetailFragment=GitDetailFragment();
+    private val TAG = "MainActivity"
+    // private lateinit var binding: ActivityMainBinding
+    lateinit var viewModel: MainViewModel
+    private val retrofitService = GitAppInterface.getInstance()
+    //val recyclerView:RecyclerView=findViewById(R.id.recyclerView)
+    //  val adapter = MainAdapter()
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val listGitFragment=ListGitFragment();
+        val binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        viewModel= ViewModelProvider(this).get(MainViewModel::class.java)
-        var repoList:MutableList<String> = mutableListOf()
-        var itemObserver= Observer<List<Item>>{
-            for (item:Item in it){
-                repoList.add("Proyect: "+ item.name.toString()+"\nAutor: "+item.owner.login+"")
 
-            }
-            listGitFragment.listGitRepo(repoList)
+        viewModel = ViewModelProvider(this, MyViewModelFactory(GitDataSet(retrofitService))).get(MainViewModel::class.java)
+        //binding.recyclerview.adapter = adapter
+        viewModel.gitList.observe(this, Observer {
+            //Log.d("msg", "MainActivity: $it")
+
             if (savedInstanceState == null) {
-                supportFragmentManager.beginTransaction()
+                     supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainerView, listGitFragment)
                     .commitNow()//*/
+                listGitFragment.setupRecycledView( it )
             }
-        }
-        viewModel.getListItemLiveData().observe(this,itemObserver)
-           }
+        })
+        viewModel.errorMessage.observe(this, Observer {
+            Log.d("msg", "onCreate: $it")
+        })
+
+        viewModel.getAllMovies()
+
+
+    }
 
     override fun selectRepo(position: Int) {
-        Log.d("msg","Click on pos: "+position.toString())
-            val detail=viewModel.getDetail(position)
-            gitDetailFragment.setDetail(detail);
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, gitDetailFragment)
-                .commitNow()//*/
-
+        TODO("Not yet implemented")
     }
 
     override fun backFromDetail() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, listGitFragment)
-            .commitNow()//*/
+        TODO("Not yet implemented")
     }
+
+    /* fun setupRecycledView(list: List<MovieItem>){
+         //recyclerView.layoutManager=LinearLayoutManager(this)
+         val recyclerView=binding.recyclerView
+         recyclerView.layoutManager= LinearLayoutManager(this)
+         recyclerView.adapter=MovieAdapter(list)
+     }*/
 
 }

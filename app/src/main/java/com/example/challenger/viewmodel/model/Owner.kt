@@ -1,4 +1,4 @@
-package com.example.challenger.data
+package com.example.challenger.viewmodel.model
 
 data class Owner(
     val avatar_url: String,
